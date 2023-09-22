@@ -1,0 +1,69 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Pet {
+  id        Int      @id @default(autoincrement())
+  name      String
+  updatedAt DateTime @updatedAt
+  title     String   @db.VarChar(255)
+  content   String?
+  published Boolean  @default(false)
+  owner     User     @relation(fields: [ownerId], references: [id])
+  ownerId   Int
+}
+
+model User {
+  id    Int     @id @default(autoincrement())
+  email String  @unique
+  name  String?
+  pets  Pet[]
+}
+
+model Fts {
+  id            Int           @id @default(autoincrement())
+  ftsName       String
+  lat           Float
+  lng           Float
+  setuptime_fts Int
+  speed         Int
+  cranes        Crane[]
+  CargoCranes   CargoCranes[]
+}
+
+model Crane {
+  id              Int           @id @default(autoincrement())
+  craneName       String
+  fts_id          Int
+  setuptime_crane Int
+  Fts             Fts?          @relation(fields: [fts_id], references: [id])
+  CargoCranes     CargoCranes[]
+}
+
+model Cargo {
+  id          Int           @id @default(autoincrement())
+  cargoName   String
+  CargoCranes CargoCranes[]
+}
+
+model CargoCranes {
+  id                Int    @id @default(autoincrement())
+  crane_id          Int
+  cargo_id          Int
+  fts_id            Int
+  consumption_rates Float
+  workrates         Int
+  category          String
+
+  crane Crane @relation(fields: [crane_id], references: [id])
+  cargo Cargo @relation(fields: [cargo_id], references: [id])
+  fts   Fts   @relation(fields: [fts_id], references: [id])
+}
