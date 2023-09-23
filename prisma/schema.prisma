@@ -10,22 +10,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Pet {
-  id        Int      @id @default(autoincrement())
-  name      String
-  updatedAt DateTime @updatedAt
-  title     String   @db.VarChar(255)
-  content   String?
-  published Boolean  @default(false)
-  owner     User     @relation(fields: [ownerId], references: [id])
-  ownerId   Int
-}
-
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
-  pets  Pet[]
+  id              Int    @id @default(autoincrement())
+  username        String
+  password        String
+  confirmPassword String
+  @@unique([username])
 }
 
 model Fts {

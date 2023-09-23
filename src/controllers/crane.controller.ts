@@ -3,17 +3,16 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-export const postCrane = async (req: Request, res: Response) => {
+export const getCrane = async (req: Request, res: Response) => {
     try {
-        const { craneName, fts_id, setuptime_crane } = req.body
-        const crane = await prisma.crane.create({
-            data: {
-                craneName,
-                fts_id,
-                setuptime_crane
+        const cargo_cranes = await prisma.cargoCranes.findMany({
+            include: {
+                crane: true,
+                cargo: true,
+                fts: true
             }
         })
-        return res.status(200).json(crane)
+        return res.status(200).json(cargo_cranes)
     } catch (error) {
         console.log(error)
     }
