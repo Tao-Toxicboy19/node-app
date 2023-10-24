@@ -11,11 +11,11 @@ services:
     volumes:
       - D:\Back-end-project\node-prisma\db:/var/lib/postgresql/data
 
-  nodejs:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "3003:3003"
-    depends_on:
-      - db 
+  # nodejs:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "3003:3003"
+  #   depends_on:
+  #     - db 

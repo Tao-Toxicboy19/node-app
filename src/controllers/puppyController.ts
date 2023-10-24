@@ -65,6 +65,58 @@ export const getPuppyController = async (req: Request, res: Response) => {
     }
 }
 
+export const getPuppyByIdController = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+
+        if (!id) {
+            return res.status(400).json({ error: "Missing id parameter" });
+        }
+
+        const puppy = await prisma.puppyV2.findUnique({
+            where: {
+                id: parseInt(id),
+            },
+        });
+
+        if (!puppy) {
+            return res.status(404).json({ error: "Puppy not found" });
+        }
+
+        return res.status(200).json(puppy);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send("Internal Server Error");
+    }
+}
 
 
+export const updatedPuppyController = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
 
+        const { puppyName, breed } = req.body;
+
+        if (!req.file) {
+            return res.status(400).json({ error: "No file uploaded" });
+        }
+
+        const newImageUrl = req.file.filename;
+
+        const updatedPuppy = await prisma.puppyV2.update({
+            where: {
+                id: parseInt(id),
+            },
+            data: {
+                puppyName: puppyName,
+                breed: breed,
+                imageUrl: newImageUrl,
+            },
+        });
+
+        return res.status(200).json({ message: 'Puppy image updated successfully', puppy: updatedPuppy });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send("Internal Server Error");
+    }
+}

@@ -26,6 +26,15 @@
   "scripts": {
     "start": "nodemon src/server.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc"
+    "build": "tsc",
+    "build-bcrypt": "npm install bcrypt && npm run build"
+  },  
+  "prisma": {
+    "client": {
+      "binaryTargets": [
+        "native",
+        "debian-openssl-3.0.0"
+      ]
+    }
   }
 }

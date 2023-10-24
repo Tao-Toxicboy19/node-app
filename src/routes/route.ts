@@ -3,7 +3,7 @@ import { loginController, registerController } from '../controllers/authControll
 import { Request, Response } from "express";
 import { auth } from '../middleware/auth';
 import { upload } from '../middleware/upload';
-import { createPuppyController, deletePuppyController, getPuppyController } from '../controllers/puppyController';
+import { createPuppyController, deletePuppyController, getPuppyByIdController, getPuppyController, updatedPuppyController } from '../controllers/puppyController';
 
 
 const router = express.Router();
@@ -14,8 +14,10 @@ router.post('/login', loginController)
 router.post('/puppy', auth, upload, createPuppyController)
 router.delete('/puppy/:id', auth, upload, deletePuppyController)
 router.get('/puppy', auth, upload, getPuppyController)
+router.put('/puppy/:id', auth, upload, updatedPuppyController)
+router.get('/puppy/:id', auth, upload, getPuppyByIdController)
 
-router.get('/hello', auth, (req: Request, res: Response) => {
+router.get('/hello', auth, (res: Response) => {
     return res.json({ success: "hello" })
 })
 

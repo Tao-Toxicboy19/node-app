@@ -11,6 +11,8 @@ app.use(cors())
 
 app.use('/api', router)
 
-app.listen(30, () => {
-    console.log('Example app listening on port 30!')
+const port = 30
+
+app.listen(port, () => {
+    console.log(`Example app listening on port${port}!!!`)
 })
