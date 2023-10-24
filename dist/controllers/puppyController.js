@@ -37,7 +37,7 @@ const deletePuppyController = async (req, res) => {
                 id: parseInt(id),
             },
         });
-        const filePath = path_1.default.join(__dirname, '../uploads', deletedPuppy.imageUrl);
+        const filePath = path_1.default.join(__dirname, "../../uploads", deletedPuppy.imageUrl);
         fs_1.default.unlink(filePath, (err) => {
             if (err) {
                 console.error(err);
