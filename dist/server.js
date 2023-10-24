@@ -12,6 +12,7 @@ app.use(express_1.default.json());
 app.use('/uploads', express_1.default.static(path_1.default.join(__dirname, 'uploads')));
 app.use((0, cors_1.default)());
 app.use('/api', route_1.default);
-app.listen(3003, () => {
-    console.log('Example app listening on port 3003!');
+const port = 30;
+app.listen(port, () => {
+    console.log(`Example app listening on port${port}!!!`);
 });

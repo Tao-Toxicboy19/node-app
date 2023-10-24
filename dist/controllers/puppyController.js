@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getPuppyController = exports.deletePuppyController = exports.createPuppyController = void 0;
+exports.updatedPuppyController = exports.getPuppyByIdController = exports.getPuppyController = exports.deletePuppyController = exports.createPuppyController = void 0;
 const prisma_1 = __importDefault(require("../prisma/prisma"));
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
@@ -65,3 +65,51 @@ const getPuppyController = async (req, res) => {
     }
 };
 exports.getPuppyController = getPuppyController;
+const getPuppyByIdController = async (req, res) => {
+    try {
+        const { id } = req.params;
+        if (!id) {
+            return res.status(400).json({ error: "Missing id parameter" });
+        }
+        const puppy = await prisma_1.default.puppyV2.findUnique({
+            where: {
+                id: parseInt(id),
+            },
+        });
+        if (!puppy) {
+            return res.status(404).json({ error: "Puppy not found" });
+        }
+        return res.status(200).json(puppy);
+    }
+    catch (error) {
+        console.error(error);
+        return res.status(500).send("Internal Server Error");
+    }
+};
+exports.getPuppyByIdController = getPuppyByIdController;
+const updatedPuppyController = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { puppyName, breed } = req.body;
+        if (!req.file) {
+            return res.status(400).json({ error: "No file uploaded" });
+        }
+        const newImageUrl = req.file.filename;
+        const updatedPuppy = await prisma_1.default.puppyV2.update({
+            where: {
+                id: parseInt(id),
+            },
+            data: {
+                puppyName: puppyName,
+                breed: breed,
+                imageUrl: newImageUrl,
+            },
+        });
+        return res.status(200).json({ message: 'Puppy image updated successfully', puppy: updatedPuppy });
+    }
+    catch (error) {
+        console.error(error);
+        return res.status(500).send("Internal Server Error");
+    }
+};
+exports.updatedPuppyController = updatedPuppyController;
