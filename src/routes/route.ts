@@ -17,7 +17,7 @@ router.get('/puppy', auth, upload, getPuppyController)
 router.put('/puppy/:id', auth, upload, updatedPuppyController)
 router.get('/puppy/:id', auth, upload, getPuppyByIdController)
 
-router.get('/hello', auth, (res: Response) => {
+router.get('/', auth, (req: Request, res: Response) => {
     return res.json({ success: "hello" })
 })
 

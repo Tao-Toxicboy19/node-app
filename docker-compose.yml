@@ -1,12 +1,17 @@
-version: "3"
+version: "3.4"
+
 services:
-  db:
+  nodeprisma:
     image: postgres
-    ports:
-      - "6500:5432"
+    build:
+      context: .
+      dockerfile: ./Dockerfile
     environment:
+      NODE_ENV: production
       POSTGRES_DB: nestjs
       POSTGRES_PASSWORD: testpass123
       POSTGRES_USER: postgres
+    ports:
+      - "6500:5432"
     volumes:
       - D:\Back-end-project\node-prisma\db:/var/lib/postgresql/data
