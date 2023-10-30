@@ -16,7 +16,7 @@ router.delete('/puppy/:id', auth_1.auth, upload_1.upload, puppyController_1.dele
 router.get('/puppy', auth_1.auth, upload_1.upload, puppyController_1.getPuppyController);
 router.put('/puppy/:id', auth_1.auth, upload_1.upload, puppyController_1.updatedPuppyController);
 router.get('/puppy/:id', auth_1.auth, upload_1.upload, puppyController_1.getPuppyByIdController);
-router.get('/hello', auth_1.auth, (res) => {
+router.get('/', auth_1.auth, (req, res) => {
     return res.json({ success: "hello" });
 });
 exports.default = router;
