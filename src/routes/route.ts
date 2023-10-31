@@ -4,6 +4,8 @@ import { Request, Response } from "express";
 import { auth } from '../middleware/auth';
 import { upload } from '../middleware/upload';
 import { createPuppyController, deletePuppyController, getPuppyByIdController, getPuppyController, updatedPuppyController } from '../controllers/puppyController';
+import prisma from '../prisma/prisma';
+import { json } from 'stream/consumers';
 
 
 const router = express.Router();
