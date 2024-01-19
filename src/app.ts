@@ -1,18 +1,13 @@
-import express from 'express'
-import cors from 'cors'
-import router from './routes/route'
-import path from 'path'
+import express from "express"
+import MiddlewareSetup from "./middleware/MiddlewareSetup"
+import router from "./routes/route"
 
 const app = express()
 
-app.use(express.json())
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
-app.use(cors())
+app.use(MiddlewareSetup)
+app.use("/api", router)
 
-app.use('/api', router)
-
-const port = 30
-
+const port = 8080
 app.listen(port, () => {
-    console.log(`Example app listening on port${port}!!!`)
+    console.log(`Connected to the server on port ${port}`)
 })

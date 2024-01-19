@@ -1,18 +1,33 @@
 import jwt from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
 
-export const auth = async (req: Request, res: Response, next: NextFunction) => {
+// Define a custom type for your user
+interface User {
+    userId: number;
+    name: string;
+    role: string;
+    group: number;
+}
+
+// Extend the Request type to include the user property
+interface AuthRequest extends Request {
+    user?: User;
+}
+
+export const auth = async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
         const token = req.headers["authorization"];
         if (!token) {
             return res.status(401).send("No token");
         }
 
-        jwt.verify(token, "Toxicboy", (err) => {
+        jwt.verify(token, "Toxicboy", (err: any, decoded: any) => {
             if (err) {
                 console.error(err);
                 return res.status(401).send("Token Invalid");
             }
+
+            req.user = decoded.user;
 
             next();
         });
