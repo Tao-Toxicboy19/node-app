@@ -43,7 +43,7 @@
   },
   "scripts": {
     "start:dev": "nodemon src/app.ts",
-    "start": "pm2 start dist/main.js -i 3",
+    "start": "pm2 start dist/main.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
     "build-bcrypt": "npm install bcrypt && npm run build"

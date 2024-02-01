@@ -86,9 +86,9 @@ export const Login = async (req: Request, res: Response) => {
     }
 }
 
-export const roles = async (req: any, res: Response) => {
+export const roles = async (req: AuthRequest, res: Response) => {
     try {
-        const { userId, name, role, ftsId, group } = req.user;
+        const { userId, name, role, ftsId, group }: any = req.user;
 
         return res.status(200).json({ message: "OK", userId, name, role, ftsId, group });
 

@@ -7,6 +7,9 @@ WORKDIR /usr/src/app
 # Copy package.json and package-lock.json to the working directory
 COPY package*.json ./
 
+# Install PM2 globally
+RUN npm install -g pm2
+
 # Install app dependencies
 RUN npm install
 
@@ -23,4 +26,4 @@ RUN npx prisma generate
 EXPOSE 8080
 
 # Start the application
-CMD ["npm", "start"]
+CMD ["pm2-runtime", "start", "dist/main.js", "-i", "3"]

@@ -7,7 +7,7 @@ const app = express()
 app.use(MiddlewareSetup)
 app.use("/api", router)
 
-const port = 8080
+const port = 7070
 app.listen(port, () => {
     console.log(`Connected to the server on port ${port}`)
 })

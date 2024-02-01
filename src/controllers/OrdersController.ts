@@ -13,11 +13,19 @@ export const GetOrderController = async (req: Request, res: Response) => {
                 cargo_order: {
                     include: {
                         cargo: true,
+                        Bulks: true
                     },
                 },
             },
         })
-        return res.json(order)
+        const result = order.map((item: any) => ({
+            ...item,
+            arrival_time: new Date(item.arrival_time).toLocaleString(),
+            deadline_time: new Date(item.deadline_time).toLocaleString(),
+        }));
+
+        // moment(item.start_time, 'YYYY-MM-DD HH:mm:ss').format('DD/MM/YYYY HH:mm:ss')
+        return res.json(result)
     } catch (error) {
         console.log(error)
         return res.status(500).json({ error: "An error occurred" });
@@ -147,21 +155,29 @@ export const UpdateOrderController = async (req: Request, res: Response) => {
 
 export const DeleteOrderController = async (req: any, res: any) => {
     try {
-        const id = parseInt(req.params.id, 10);
-
-        // ลบรายการ cargo_order ที่มี order_id เท่ากับ or_id
+        const id = +req.params.id
+        await prisma.bulks.deleteMany({
+            where: {
+                cargo_orderOrder_id: id
+            }
+        })
         await prisma.cargo_order.deleteMany({
             where: {
                 order_id: id
             }
         });
-
-        // ลบรายการ carrier_order โดยอ้างอิง or_id
-        const deleteOrder = await prisma.carrier_order.delete({
+        await prisma.solution_carrier_order.deleteMany({
+            where: {
+                order_id: id
+            }
+        })
+        await prisma.carrier_order.delete({
             where: {
                 or_id: id
             }
         });
+
+
 
         res.json({ message: 'OK' });
     } catch (error: any) {
@@ -499,15 +515,41 @@ export const importCSVOrders = async (req: Request, res: Response) => {
                 bulk,
             } = record;
 
-            const arrival_timeV2 = moment(
-                arrival_time,
-                "DD/MM/YYYY HH:mm:ss"
-            ).format("YYYY-MM-DD HH:mm:ss");
+            // let allFormats = [
+            //     "DD/MM/YYYY HH:mm:ss",
+            //     "MM/DD/YYYY HH:mm:ss",
+            //     "YYYY/MM/DD HH:mm:ss",
+            //     "YYYY-MM-DD HH:mm:ss",
+            //     "YYYY-MM-DD",
+            //     "MM/DD/YYYY",
+            //     "DD/MM/YYYY",
+            //     "YYYY/MM/DD",
+            //     "HH:mm:ss",
+            //     "HH:mm",
+            // ];
+            let allFormatsV2 = [
+                "DD/MM/YYYY HH:mm",
+                "D/M/YYYY HH:mm",
+                "YYYY/MM/DD HH:mm",
+                "YYYY-MM-DD HH:mm",
+                "YYYY/MM/DD",
+                "YYYY-MM-DD",
+                "DD/MM/YYYY",
+                "D/M/YYYY",
+                "HH:mm:ss",
+                "HH:mm",
+            ];
 
-            const deadline_timeV2 = moment(
-                deadline_time,
-                "DD/MM/YYYY HH:mm:ss"
-            ).format("YYYY-MM-DD HH:mm:ss");
+            // let arrival_timeV2 = moment(arrival_time, allFormats).format("YYYY-MM-DD HH:mm:ss");
+            // let deadline_timeV2 = moment(deadline_time, allFormats).format("YYYY-MM-DD HH:mm:ss");
+
+            let arrival_timeV2 = moment(arrival_time, allFormatsV2).format(
+                "YYYY-MM-DD HH:mm:ss"
+            );
+            console.log(arrival_timeV2)
+            let deadline_timeV2 = moment(deadline_time, allFormatsV2).format(
+                "YYYY-MM-DD HH:mm:ss"
+            );
 
             const createOrderCarrier = await prisma.carrier_order.create({
                 data: {
@@ -564,6 +606,9 @@ export const deleteManyOrder = async (req: Request, res: Response) => {
     try {
         const id = +req.params.group
         await prisma.$transaction([
+            prisma.solution_carrier_order.deleteMany({
+                where: { s_id: id }
+            }),
             prisma.bulks.deleteMany({
                 where: { group: id }
             }),
@@ -575,6 +620,23 @@ export const deleteManyOrder = async (req: Request, res: Response) => {
             }),
         ]);
 
+        res.json({ message: "OK" });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("Internal Server Error");
+    }
+}
+
+export const deleteManyOrdersChackbox = async (req: Request, res: Response) => {
+    try {
+        const ids = req.body
+        console.log(ids)
+        await prisma.$transaction([
+            ...ids.map((id: number) => prisma.solution_carrier_order.deleteMany({ where: { order_id: +id } })),
+            ...ids.map((id: number) => prisma.bulks.deleteMany({ where: { cargo_orderOrder_id: +id } })),
+            ...ids.map((id: number) => prisma.cargo_order.deleteMany({ where: { order_id: +id } })),
+            ...ids.map((id: number) => prisma.carrier_order.deleteMany({ where: { or_id: +id } }))
+        ]);
         res.json({ message: "OK" });
     } catch (error) {
         console.log(error);

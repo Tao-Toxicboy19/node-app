@@ -3,7 +3,6 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-
 export const GetCrane = async (req: Request, res: Response) => {
     try {
         const resutlt = await prisma.crane.findMany()
@@ -46,6 +45,7 @@ export const UpdateCrane = async (req: Request, res: Response) => {
                 crane_name, FTS_id, setuptime_crane, wage_month_cost
             }
         })
+
         return res.json(updateCrane);
     } catch (error) {
         console.log(error)

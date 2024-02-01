@@ -41,10 +41,10 @@ export const GetbyIdCarrier = async (req: Request, res: Response) => {
 
 export const PostCarrierController = async (req: Request, res: Response) => {
     try {
-        const { carrier_name, holder, maxcapacity, burden, Width, carrier_max_FTS, carrier_max_crane, length, has_crane, group } = req.body
+        const { carrier_name, holder, maxcapacity, burden, Width, carrier_max_FTS, carrier_max_crane, length, has_crane } = req.body
         const carrier = await prisma.carrier.create({
             data: {
-                carrier_name, holder, maxcapacity, burden, Width, carrier_max_FTS, carrier_max_crane, length, has_crane, group
+                carrier_name, holder, maxcapacity, burden, Width, carrier_max_FTS, carrier_max_crane, length, has_crane
             }
         })
         return res.json({ message: 'OK', carrier })

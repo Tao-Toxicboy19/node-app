@@ -3,6 +3,20 @@ import moment from 'moment';
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
+export const crane_solutionV2 = async (req: Request, res: Response) => {
+    try {
+        const resutl = await prisma.$queryRaw`
+        SELECT * FROM crane_solution 
+        `
+
+        return res.json(resutl)
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: "An error occurred" });
+    }
+}
+
 
 // export const solution_schedule = (req: Request, res: Response) => {
 //     const { id } = req.params
@@ -171,22 +185,29 @@ export const report_solution_crane = async (req: Request, res: Response) => {
 }
 
 export const solution_carrier_order = async (req: Request, res: Response) => {
-    const sql = `
-    SELECT
-        *
-    FROM
-        solution_carrier_order
-    JOIN carrier_order ON solution_carrier_order.order_id = carrier_order.or_id
-    JOIN carrier ON carrier_order.or_id = carrier.cr_id
-    `;
+    // const sql = `
+    // SELECT
+    //     *
+    // FROM
+    //     solution_carrier_order
+    // JOIN carrier_order ON solution_carrier_order.order_id = carrier_order.or_id
+    // JOIN carrier ON carrier_order.or_id = carrier.cr_id
+    // `;
 
     const result: any = await prisma.$queryRaw`
-       SELECT
+        SELECT
             *
         FROM
             solution_carrier_order
         JOIN carrier_order ON solution_carrier_order.order_id = carrier_order.or_id
-        JOIN carrier ON carrier_order.or_id = carrier.cr_id
+        JOIN carrier ON carrier_order.cr_id = carrier.cr_id
+
+    --    SELECT
+    --         *
+    --     FROM
+    --         solution_carrier_order
+    --     JOIN carrier_order ON solution_carrier_order.order_id = carrier_order.or_id
+    --     JOIN carrier ON carrier_order.or_id = carrier.cr_id
     `
     return res.json(result);
 
